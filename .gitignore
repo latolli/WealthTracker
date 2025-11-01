@@ -1,0 +1,4 @@
+/env
+/__pycache__
+/ui/__pycache__
+start_tracker.bat
