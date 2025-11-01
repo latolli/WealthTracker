@@ -33,7 +33,6 @@ class BusinessLogic:
         months = []
 
         for entry in data:
-            print(entry)  # Debugging line to check data entries
             months.append(entry['month'])
             wealth_data.append(self.calculate_total_wealth(entry))
             income_data.append(entry['salary'] + entry['other_income'])
