@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QMessageBox, QLabel, QComboBox
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
 
 class DataEntryTab(QWidget):
     def __init__(self, data_handler, graphs_tab):

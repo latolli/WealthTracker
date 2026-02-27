@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.patches import Rectangle
 import numpy as np
 
 class GraphsTab(QWidget):
@@ -59,36 +58,48 @@ class GraphsTab(QWidget):
     def plot_total_wealth(self):
         months, wealth_data, _, _, _ = self.business_logic.prepare_data_for_plotting()
         if months:
+            avg_growth = (wealth_data[-1] - wealth_data[0]) / (len(months) - 1) if len(months) > 1 else 0
+            title = f'Total Wealth || Avg growth: {avg_growth:.2f}/M'
             ax = self.wealth_figure.add_subplot(111)
             ax.clear()
             ax.plot(months, wealth_data, marker='o', label='Total Wealth')
-            ax = self.plot_common_activities(ax, 'Total Wealth Over Time', 'Wealth')
+            ax = self.plot_common_activities(ax, title, 'Wealth')
             self.wealth_canvas.draw()
 
     def plot_income_vs_expenses(self):
         months, _, income_data, expenses_data, _ = self.business_logic.prepare_data_for_plotting()
         if months:
+            avg_income = (sum(income_data)) / (len(months))
+            title = f'Income & Expenses || Avg income: {avg_income:.2f}/M'
             ax = self.income_expenses_figure.add_subplot(111)
             ax.clear()
             ax.plot(months, income_data, marker='o', label='Income', color='blue')
             ax.plot(months, expenses_data, marker='o', label='Expenses', color='red')
-            ax = self.plot_common_activities(ax, 'Income vs Expenses', 'Amount')
+            ax = self.plot_common_activities(ax, title, 'Amount')
             self.income_expenses_canvas.draw()
 
     def plot_expense_types(self):
         months, _, _, _, expense_types_data = self.business_logic.prepare_data_for_plotting()
         if months:
+            avg_expenses = 0
             ax = self.expense_types_figure.add_subplot(111)
             ax.clear()
             colors = ['blue', 'green', 'orange', 'purple', 'brown', 'yellow']
             for idx, (expense_type, values) in enumerate(expense_types_data.items()):
                 ax.plot(months, values, marker='o', label=expense_type.replace('_', ' ').title(), color=colors[idx])
-            ax = self.plot_common_activities(ax, 'Expense Types Over Time', 'Amount')
+                avg_expenses += sum(values)
+            avg_expenses = avg_expenses / (len(months))
+            title = f'Expense Types || Avg expenses: {avg_expenses:.2f}/M'
+            ax = self.plot_common_activities(ax, title, 'Amount')
             self.expense_types_canvas.draw()
 
     def plot_common_activities(self, ax, title, y_label):
         # Function for doing common plotting tasks
-        ax.set_title(title, color='white')
+        ax.set_title(title, color='white', 
+            fontdict={
+                "family": "Arial",
+                "size": 12,
+                "weight": "bold"})
         ax.set_ylabel(y_label, color='white')
         ax.tick_params(axis='x', colors='white')
         ax.tick_params(axis='y', colors='white')
@@ -163,9 +174,10 @@ class GraphsTab(QWidget):
 
         # Remove all previous annotations
         for g_type in list(self.annotations.keys()):
-            self.annotations[g_type].remove()
-            del self.annotations[g_type]
-            self.canvases[g_type].draw_idle()
+            if self.annotations[g_type] is not None:
+                self.annotations[g_type].remove()
+                del self.annotations[g_type]
+                self.canvases[g_type].draw_idle()
             
         # Draw the new annotation if applicable
         if draw_new:
