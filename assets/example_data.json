@@ -1,0 +1,112 @@
+{
+    "monthly_data": [
+        {
+            "month": "2025-09",
+            "mortage_loan": 180450.0,
+            "other_loan": 9800.0,
+            "salary": 3200.0,
+            "other_income": 150.0,
+            "invested_and_loans_payed": 700.0,
+            "living_and_bills": 1400.0,
+            "food_expenses": 420.0,
+            "sport_culture_travel": 350.0,
+            "other_expenses": 180.0,
+            "assets": {
+                "house": 210000.0,
+                "car": 8500.0,
+                "bank": 12000.0,
+                "investments": 25000.0
+            }
+        },
+        {
+            "month": "2025-10",
+            "mortage_loan": 179900.0,
+            "other_loan": 9500.0,
+            "salary": 3250.0,
+            "other_income": 0.0,
+            "invested_and_loans_payed": 900.0,
+            "living_and_bills": 1350.0,
+            "food_expenses": 390.0,
+            "sport_culture_travel": 420.0,
+            "other_expenses": 210.0,
+            "assets": {
+                "house": 209800.0,
+                "car": 8400.0,
+                "bank": 11800.0,
+                "investments": 26200.0
+            }
+        },
+        {
+            "month": "2025-11",
+            "mortage_loan": 179250.0,
+            "other_loan": 9100.0,
+            "salary": 3180.0,
+            "other_income": 200.0,
+            "invested_and_loans_payed": 1100.0,
+            "living_and_bills": 1500.0,
+            "food_expenses": 450.0,
+            "sport_culture_travel": 200.0,
+            "other_expenses": 160.0,
+            "assets": {
+                "house": 209500.0,
+                "car": 8300.0,
+                "bank": 12500.0,
+                "investments": 27500.0
+            }
+        },
+        {
+            "month": "2025-12",
+            "mortage_loan": 178600.0,
+            "other_loan": 8700.0,
+            "salary": 3400.0,
+            "other_income": 500.0,
+            "invested_and_loans_payed": 1500.0,
+            "living_and_bills": 1700.0,
+            "food_expenses": 520.0,
+            "sport_culture_travel": 600.0,
+            "other_expenses": 300.0,
+            "assets": {
+                "house": 209200.0,
+                "car": 8200.0,
+                "bank": 13200.0,
+                "investments": 29500.0
+            }
+        },
+        {
+            "month": "2026-01",
+            "mortage_loan": 177950.0,
+            "other_loan": 8300.0,
+            "salary": 3600.0,
+            "other_income": 0.0,
+            "invested_and_loans_payed": 2200.0,
+            "living_and_bills": 1450.0,
+            "food_expenses": 480.0,
+            "sport_culture_travel": 250.0,
+            "other_expenses": 220.0,
+            "assets": {
+                "house": 209000.0,
+                "car": 8100.0,
+                "bank": 11000.0,
+                "investments": 33000.0
+            }
+        },
+        {
+            "month": "2026-02",
+            "mortage_loan": 177200.0,
+            "other_loan": 7800.0,
+            "salary": 3900.0,
+            "other_income": 120.0,
+            "invested_and_loans_payed": 1800.0,
+            "living_and_bills": 1300.0,
+            "food_expenses": 410.0,
+            "sport_culture_travel": 180.0,
+            "other_expenses": 140.0,
+            "assets": {
+                "house": 208700.0,
+                "car": 8000.0,
+                "bank": 15000.0,
+                "investments": 35200.0
+            }
+        }
+    ]
+}
