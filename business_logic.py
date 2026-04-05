@@ -7,17 +7,6 @@ class BusinessLogic:
         loans = month_data['mortage_loan'] + month_data['other_loan']
         return total_assets - loans
 
-    def calculate_monthly_savings(self, month_data):
-        total_income = month_data['salary'] + month_data['other_income']
-        total_expenses = (
-            month_data['invested_and_loans_payed'] +
-            month_data['living_and_bills'] +
-            month_data['food_expenses'] +
-            month_data['sport_culture_travel'] +
-            month_data['other_expenses']
-        )
-        return total_income - total_expenses
-
     def prepare_data_for_plotting(self):
         data = self.data_handler.read_data()["monthly_data"]
         wealth_data = []
@@ -49,3 +38,22 @@ class BusinessLogic:
                 expense_types_data[expense_type].append(entry[expense_type])
 
         return months, wealth_data, income_data, expenses_data, expense_types_data
+    
+    def prepare_assets_data_for_plotting(self):
+        data = self.data_handler.read_data()["monthly_data"]
+        assets_data = {
+            "house": [],
+            "investments": [],
+            "bank": [],
+            "car": []
+        }
+        months = []
+
+        for entry in data:
+            months.append(entry['month'])
+            assets_data["house"].append(entry['assets']['house'] - entry['mortage_loan'])
+            assets_data["car"].append(entry['assets']['car'])
+            assets_data["bank"].append(entry['assets']['bank'] - entry['other_loan'])
+            assets_data["investments"].append(entry['assets']['investments'])
+
+        return months, assets_data

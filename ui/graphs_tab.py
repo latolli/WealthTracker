@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import numpy as np
+from ui.ui_utils import plot_common_activities, mouse_hover_annotation
 
 class GraphsTab(QWidget):
     def __init__(self, business_logic):
@@ -63,7 +63,7 @@ class GraphsTab(QWidget):
             ax = self.wealth_figure.add_subplot(111)
             ax.clear()
             ax.plot(months, wealth_data, marker='o', label='Total Wealth')
-            ax = self.plot_common_activities(ax, title, 'Wealth')
+            ax = plot_common_activities(ax, title, 'Wealth')
             self.wealth_canvas.draw()
 
     def plot_income_vs_expenses(self):
@@ -75,7 +75,7 @@ class GraphsTab(QWidget):
             ax.clear()
             ax.plot(months, income_data, marker='o', label='Income', color='blue')
             ax.plot(months, expenses_data, marker='o', label='Expenses', color='red')
-            ax = self.plot_common_activities(ax, title, 'Amount')
+            ax = plot_common_activities(ax, title, 'Amount')
             self.income_expenses_canvas.draw()
 
     def plot_expense_types(self):
@@ -90,87 +90,12 @@ class GraphsTab(QWidget):
                 avg_expenses += sum(values)
             avg_expenses = avg_expenses / (len(months))
             title = f'Expense Types || Avg expenses: {avg_expenses:.2f}/M'
-            ax = self.plot_common_activities(ax, title, 'Amount')
+            ax = plot_common_activities(ax, title, 'Amount')
             self.expense_types_canvas.draw()
 
-    def plot_common_activities(self, ax, title, y_label):
-        # Function for doing common plotting tasks
-        ax.set_title(title, color='white', 
-            fontdict={
-                "family": "Arial",
-                "size": 12,
-                "weight": "bold"})
-        ax.set_ylabel(y_label, color='white')
-        ax.tick_params(axis='x', colors='white')
-        ax.tick_params(axis='y', colors='white')
-        ax.legend(loc='upper left', fontsize=9)
-        ax.grid(True)
-        ax.set_facecolor('#353535')
-        return ax
-
     def on_hover(self, event, graph_type):
-        """Handle mouse hover events to show data values."""
-        if event.inaxes is None or event.xdata is None or event.ydata is None:
-            return
-        
-        ax = event.inaxes
-        
-        # Find the closest data point to the mouse cursor
-        closest_dist = float('inf')
-        closest_point = None
-        closest_label = None
-        
-        for line in ax.get_lines():
-            xdata = line.get_xdata()
-            ydata = line.get_ydata()
-            
-            if len(xdata) == 0:
-                continue
-            
-            # Calculate distances from cursor to all points on this line
-            for i, (x, y) in enumerate(zip(xdata, ydata)):
-                # Calculate Euclidean distance in axes coordinate space
-                x_range = ax.get_xlim()[1] - ax.get_xlim()[0]
-                y_range = ax.get_ylim()[1] - ax.get_ylim()[0]
-                
-                # Normalize distances
-                try:
-                    x_dist = abs(float(x) - event.xdata) / x_range if x_range != 0 else 0
-                except (ValueError, TypeError):
-                    # If x is not numeric (e.g., string), use index position
-                    x_dist = abs(i - event.xdata) / x_range if x_range != 0 else 0
-                
-                y_dist = abs(y - event.ydata) / y_range if y_range != 0 else 0
-                distance = np.sqrt(x_dist**2 + y_dist**2)
-                
-                if distance < closest_dist:
-                    closest_dist = distance
-                    closest_point = (x, y, i)
-                    closest_label = line.get_label()
-
-        # Only show annotation if cursor is close enough
-        draw_new = closest_dist < 0.1 and closest_point is not None
-        if draw_new:
-            x, y, idx = closest_point
-            
-            # Create new annotation
-            label_text = f'{closest_label}\nX: {x}\nY: {y:.2f}'
-            annotation = ax.annotate(label_text,
-                                    xy=(idx, y),
-                                    xytext=(10, 10),
-                                    textcoords='offset points',
-                                    bbox=dict(boxstyle='round,pad=0.7', 
-                                             fc='#1a1d21', 
-                                             ec='#4a90e2',
-                                             alpha=0.95,
-                                             linewidth=2),
-                                    arrowprops=dict(arrowstyle='->', 
-                                                   connectionstyle='arc3,rad=0',
-                                                   color='#4a90e2',
-                                                   lw=1.5),
-                                    fontsize=9,
-                                    color='white',
-                                    zorder=10)
+        # Handle mouse hover event on graphs
+        new_annotation = mouse_hover_annotation(event)
 
         # Remove all previous annotations
         for g_type in list(self.annotations.keys()):
@@ -180,6 +105,6 @@ class GraphsTab(QWidget):
                 self.canvases[g_type].draw_idle()
             
         # Draw the new annotation if applicable
-        if draw_new:
-            self.annotations[graph_type] = annotation
+        if new_annotation is not None:
+            self.annotations[graph_type] = new_annotation
             self.canvases[graph_type].draw_idle()

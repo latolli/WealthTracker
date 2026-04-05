@@ -2,10 +2,11 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QLineEdit, QPushB
 from PyQt5.QtGui import QFont
 
 class DataEntryTab(QWidget):
-    def __init__(self, data_handler, graphs_tab):
+    def __init__(self, data_handler, graphs_tab, assets_tab):
         super().__init__()
         self.data_handler = data_handler
         self.graphs_tab = graphs_tab
+        self.assets_tab = assets_tab
         self.init_ui()
 
     def init_ui(self):
@@ -87,7 +88,6 @@ class DataEntryTab(QWidget):
 
             # Save data and refresh graphs
             self.data_handler.add_monthly_data(data)
-            self.graphs_tab.refresh_graphs()
             self.refresh_combo_box()
 
             QMessageBox.information(self, "Success", "Data saved successfully!")
@@ -110,7 +110,6 @@ class DataEntryTab(QWidget):
 
         # Refresh the combo box and graphs
         self.refresh_combo_box()
-        self.graphs_tab.refresh_graphs()
 
         QMessageBox.information(self, "Success", f"Data for {month_to_delete} deleted successfully!")
 
@@ -152,6 +151,9 @@ class DataEntryTab(QWidget):
 
     def refresh_combo_box(self):
         # Refresh the data in combo box and graphs
+        self.graphs_tab.refresh_graphs()
+        self.assets_tab.refresh_assets()
+
         updated_data = self.data_handler.read_data()["monthly_data"]
         updated_months = ["New data"] + [entry["month"] for entry in updated_data]
         self.combo.clear()
