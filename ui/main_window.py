@@ -70,4 +70,27 @@ class MainWindow(QMainWindow):
                 font-size: 14px;
                 font-family: Arial;
             }
+            QTabWidget::pane {
+                border: none;
+            }
+            QTabBar::tab {
+                font-family: Arial;
+                font-weight: bold;
+                font-size: 14px;
+                background: transparent;
+                color: white;
+                min-width: 200px;
+                min-height: 20px;
+                padding: 10px;
+                border-bottom: 2px solid white;
+            }
+            QTabBar::tab:selected {
+                color: #ccba78;
+            }
+            QTabBar::tab:hover {
+                background-color: rgba(255, 255, 255, 30);
+            }
+            QTabWidget::tab-bar {
+                alignment: center;
+            }
         """)
