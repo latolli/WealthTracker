@@ -1,3 +1,5 @@
+from ui.setting import global_settings
+
 class BusinessLogic:
     def __init__(self, data_handler):
         self.data_handler = data_handler
@@ -37,6 +39,15 @@ class BusinessLogic:
             for expense_type in expense_types_data.keys():
                 expense_types_data[expense_type].append(entry[expense_type])
 
+        # Apply time range limit if set
+        if global_settings["time_range"]["value"] > 0 and len(months) > global_settings["time_range"]["value"]:
+            months = months[-global_settings["time_range"]["value"]:]
+            wealth_data = wealth_data[-global_settings["time_range"]["value"]:]
+            income_data = income_data[-global_settings["time_range"]["value"]:]
+            expenses_data = expenses_data[-global_settings["time_range"]["value"]:]
+            for expense_type in expense_types_data.keys():
+                expense_types_data[expense_type] = expense_types_data[expense_type][-global_settings["time_range"]["value"]:]
+
         return months, wealth_data, income_data, expenses_data, expense_types_data
     
     def prepare_assets_data_for_plotting(self):
@@ -55,5 +66,12 @@ class BusinessLogic:
             assets_data["car"].append(entry['assets']['car'])
             assets_data["bank"].append(entry['assets']['bank'] - entry['other_loan'])
             assets_data["investments"].append(entry['assets']['investments'])
+
+        # Apply time range limit if set
+        if global_settings["time_range"]["value"] > 0 and len(months) > global_settings["time_range"]["value"]:
+            limit = global_settings["time_range"]["value"]
+            months = months[-limit:]
+            for asset_type in assets_data.keys():
+                assets_data[asset_type] = assets_data[asset_type][-limit:]
 
         return months, assets_data

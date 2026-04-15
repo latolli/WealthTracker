@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from ui.ui_utils import mouse_hover_annotation, plot_common_activities
+from ui.ui_utils import mouse_hover_annotation, plot_common_activities, graph_colors
 
 class AssetsTab(QWidget):
     def __init__(self, business_logic):
@@ -57,18 +57,23 @@ class AssetsTab(QWidget):
     def refresh_assets(self):
         # Clear and redraw all canvases and graphs
         self.assets_data_months, self.assets_data_values = self.business_logic.prepare_assets_data_for_plotting()
-        for graph_type in ['investments', 'house', 'bank']:
+        asset_graph_colors = {
+            'investments': graph_colors['gold_1'],
+            'house': graph_colors['green_1'],
+            'bank': graph_colors['blue_1']
+        }
+        for graph_type in asset_graph_colors.keys():
             self.figures[graph_type].clear()
-            self.plot_graph_by_type(graph_type)
+            self.plot_graph_by_type(graph_type, asset_graph_colors[graph_type])
 
-    def plot_graph_by_type(self, graph_type):
+    def plot_graph_by_type(self, graph_type, graph_color=graph_colors['rose_1']):
         # Draw the specified graph type (investments, house, or bank)
         if self.assets_data_months:
             avg_growth = (self.assets_data_values[graph_type][-1] - self.assets_data_values[graph_type][0]) / (len(self.assets_data_months) - 1) if len(self.assets_data_months) > 1 else 0
             title = f'{graph_type.capitalize()} || Avg growth: {avg_growth:.2f}/M'
             ax = self.figures[graph_type].add_subplot(111)
             ax.clear()
-            ax.plot(self.assets_data_months, self.assets_data_values[graph_type], marker='o', label=graph_type.capitalize())
+            ax.plot(self.assets_data_months, self.assets_data_values[graph_type], marker='.', label=graph_type.capitalize(), color=graph_color)
             ax = plot_common_activities(ax, title, 'Amount')
             self.canvases[graph_type].draw()
 

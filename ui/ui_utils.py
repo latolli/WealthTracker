@@ -1,5 +1,14 @@
 import numpy as np
 
+graph_colors = {
+    'rose_1': "#cf7680",   # gentle rose pink
+    'blue_1': "#5497c4",   # muted cool blue
+    'gold_1': "#ccba78",   # soft gold
+    'purple_1': "#866cb6", # muted lavender
+    'green_1': "#6ca06b",  # sage green
+    'slate_1': "#4f6e86",  # soft slate
+}
+
 def plot_common_activities(ax, title, y_label):
     """ Function for doing common plotting tasks """
     ax.set_title(title, color='white', 
@@ -12,7 +21,7 @@ def plot_common_activities(ax, title, y_label):
     ax.tick_params(axis='y', colors='white')
     ax.legend(loc='upper left', fontsize=9)
     ax.grid(True)
-    ax.set_facecolor('#353535')
+    ax.set_facecolor("#222222")
     return ax
 
 def mouse_hover_annotation(event):

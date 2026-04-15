@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from ui.ui_utils import plot_common_activities, mouse_hover_annotation
+from ui.ui_utils import plot_common_activities, mouse_hover_annotation, graph_colors
 
 class GraphsTab(QWidget):
     def __init__(self, business_logic):
@@ -62,7 +62,7 @@ class GraphsTab(QWidget):
             title = f'Total Wealth || Avg growth: {avg_growth:.2f}/M'
             ax = self.wealth_figure.add_subplot(111)
             ax.clear()
-            ax.plot(months, wealth_data, marker='o', label='Total Wealth')
+            ax.plot(months, wealth_data, marker='.', label='Total Wealth', color=graph_colors['gold_1'])
             ax = plot_common_activities(ax, title, 'Wealth')
             self.wealth_canvas.draw()
 
@@ -73,8 +73,8 @@ class GraphsTab(QWidget):
             title = f'Income & Expenses || Avg income: {avg_income:.2f}/M'
             ax = self.income_expenses_figure.add_subplot(111)
             ax.clear()
-            ax.plot(months, income_data, marker='o', label='Income', color='blue')
-            ax.plot(months, expenses_data, marker='o', label='Expenses', color='red')
+            ax.plot(months, income_data, marker='.', label='Income', color=graph_colors['rose_1'])
+            ax.plot(months, expenses_data, marker='.', label='Expenses', color=graph_colors['blue_1'])
             ax = plot_common_activities(ax, title, 'Amount')
             self.income_expenses_canvas.draw()
 
@@ -84,9 +84,9 @@ class GraphsTab(QWidget):
             avg_expenses = 0
             ax = self.expense_types_figure.add_subplot(111)
             ax.clear()
-            colors = ['blue', 'green', 'orange', 'purple', 'brown', 'yellow']
+            colors = [val for val in graph_colors.values()]
             for idx, (expense_type, values) in enumerate(expense_types_data.items()):
-                ax.plot(months, values, marker='o', label=expense_type.replace('_', ' ').title(), color=colors[idx])
+                ax.plot(months, values, marker='.', label=expense_type.replace('_', ' ').title(), color=colors[idx])
                 avg_expenses += sum(values)
             avg_expenses = avg_expenses / (len(months))
             title = f'Expense Types || Avg expenses: {avg_expenses:.2f}/M'

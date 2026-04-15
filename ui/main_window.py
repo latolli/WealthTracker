@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QTabWidget
-from data_entry_tab import DataEntryTab
+from ui.data_entry_tab import DataEntryTab
 from ui.assets_tab import AssetsTab
 from ui.graphs_tab import GraphsTab
+from ui.setting import SettingsTab
 
 class MainWindow(QMainWindow):
     def __init__(self, data_handler, business_logic):
@@ -30,6 +31,10 @@ class MainWindow(QMainWindow):
         # Data Entry Tab
         self.data_entry_tab = DataEntryTab(self.data_handler, self.graphs_tab, self.assets_tab)
         tabs.addTab(self.data_entry_tab, "Data Entry")
+
+        # Settings Tab
+        self.settings_tab = SettingsTab(self.graphs_tab, self.assets_tab)
+        tabs.addTab(self.settings_tab, "Settings")
 
         self.setCentralWidget(tabs)
 
