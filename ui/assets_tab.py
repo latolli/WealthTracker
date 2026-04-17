@@ -17,7 +17,7 @@ class AssetsTab(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
-        # Investments Graph
+        # Investments
         self.investments_figure = Figure()
         self.investments_figure.patch.set_facecolor('#202124')
         self.investments_canvas = FigureCanvas(self.investments_figure)
@@ -28,7 +28,7 @@ class AssetsTab(QWidget):
         self.figures['investments'] = self.investments_figure
         self.plot_graph_by_type("investments")
 
-        # House Value Graph
+        # House Value
         self.house_value_figure = Figure()
         self.house_value_figure.patch.set_facecolor('#202124')
         self.house_value_canvas = FigureCanvas(self.house_value_figure)
@@ -39,16 +39,16 @@ class AssetsTab(QWidget):
         self.figures['house'] = self.house_value_figure
         self.plot_graph_by_type("house")
 
-        # Bank Value Graph
-        self.bank_value_figure = Figure()
-        self.bank_value_figure.patch.set_facecolor('#202124')
-        self.bank_value_canvas = FigureCanvas(self.bank_value_figure)
-        layout.addWidget(self.bank_value_canvas)
-        self.bank_value_canvas.mpl_connect('motion_notify_event',
-                                             lambda event: self.on_hover(event, 'bank'))
-        self.canvases['bank'] = self.bank_value_canvas
-        self.figures['bank'] = self.bank_value_figure
-        self.plot_graph_by_type("bank")
+        # Other Assets (Cash, Car, Other loans, etc.)
+        self.other_value_figure = Figure()
+        self.other_value_figure.patch.set_facecolor('#202124')
+        self.other_value_canvas = FigureCanvas(self.other_value_figure)
+        layout.addWidget(self.other_value_canvas)
+        self.other_value_canvas.mpl_connect('motion_notify_event',
+                                             lambda event: self.on_hover(event, 'other'))
+        self.canvases['other'] = self.other_value_canvas
+        self.figures['other'] = self.other_value_figure
+        self.plot_graph_by_type("other")
 
         self.setLayout(layout)
     
@@ -58,14 +58,14 @@ class AssetsTab(QWidget):
         asset_graph_colors = {
             'investments': graph_colors['gold_1'],
             'house': graph_colors['green_1'],
-            'bank': graph_colors['blue_1']
+            'other': graph_colors['blue_1']
         }
         for graph_type in asset_graph_colors.keys():
             self.figures[graph_type].clear()
             self.plot_graph_by_type(graph_type, asset_graph_colors[graph_type])
 
     def plot_graph_by_type(self, graph_type, graph_color=graph_colors['rose_1']):
-        # Draw the specified graph type (investments, house, or bank)
+        # Draw the specified graph type (investments, house, or other)
         if self.assets_data_months:
             avg_growth = f'{(self.assets_data_values[graph_type][-1] - self.assets_data_values[graph_type][0]) / (len(self.assets_data_months) - 1) if len(self.assets_data_months) > 1 else 0:.2f}/M'
             if global_settings["private_mode"]["value"]:

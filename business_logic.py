@@ -55,17 +55,15 @@ class BusinessLogic:
         assets_data = {
             "house": [],
             "investments": [],
-            "bank": [],
-            "car": []
+            "other": []
         }
         months = []
 
         for entry in data:
             months.append(entry['month'])
             assets_data["house"].append(entry['assets']['house'] - entry['mortage_loan'])
-            assets_data["car"].append(entry['assets']['car'])
-            assets_data["bank"].append(entry['assets']['bank'] - entry['other_loan'])
             assets_data["investments"].append(entry['assets']['investments'])
+            assets_data["other"].append(entry['assets']['bank'] + entry['assets']['car'] - entry['other_loan'])
 
         # Apply time range limit if set
         if global_settings["time_range"]["value"] > 0 and len(months) > global_settings["time_range"]["value"]:
