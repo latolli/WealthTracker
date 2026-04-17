@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QMessageBox, QLabel, QSlider
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFormLayout, QHBoxLayout, QPushButton, QMessageBox, QLabel, QSlider, QCheckBox
 from PyQt5.QtGui import QFont
 
 global_settings = {
@@ -7,6 +7,12 @@ global_settings = {
         "label": "Time Range (months)",
         "value": 0,
         "max": 48,
+        "min": 0
+    },
+    "private_mode":{
+        "label": "Private Mode",
+        "value": 0,
+        "max": 1,
         "min": 0
     }
 }
@@ -42,33 +48,41 @@ class SettingsTab(QWidget):
 
         for key in global_settings.keys():
             self.form_fields_widgets[key] = {}
-
-            slider = QSlider(Qt.Horizontal)
-            slider.setMinimum(global_settings[key]["min"])
-            slider.setMaximum(global_settings[key]["max"])
-            slider.setValue(global_settings[key]["value"])
-            slider.setTickInterval(1)
-            slider.setTickPosition(QSlider.TicksBelow)
-
-            value_label = QLabel(str(slider.value()))
-            value_label.setFixedWidth(30)
-            value_label.setAlignment(Qt.AlignCenter)
-
-            slider.valueChanged.connect(
-                lambda value, label=value_label: label.setText(str(value))
-            )
-
-            row_widget = QWidget()
-            row_layout = QHBoxLayout(row_widget)
-            row_layout.setContentsMargins(0, 0, 0, 0)
-            row_layout.addWidget(slider)
-            row_layout.addWidget(value_label)
-
             label_text = key.capitalize().replace("_", " ")
-            form_layout.addRow(QLabel(label_text), row_widget)
+            entry_widget = QWidget()
+            row_layout = QHBoxLayout(entry_widget)
+            row_layout.setContentsMargins(0, 0, 0, 0)
 
-            self.form_fields_widgets[key]["slider"] = slider
-            self.form_fields_widgets[key]["value_label"] = value_label
+            setting = global_settings[key]
+            if setting["min"] == 0 and setting["max"] == 1:
+                checkbox = QCheckBox()
+                checkbox.setChecked(bool(setting["value"]))
+                row_layout.addWidget(checkbox)
+                form_layout.addRow(QLabel(label_text), entry_widget)
+
+                self.form_fields_widgets[key]["checkbox"] = checkbox
+            else:
+                slider = QSlider(Qt.Horizontal)
+                slider.setMinimum(setting["min"])
+                slider.setMaximum(setting["max"])
+                slider.setValue(setting["value"])
+                slider.setTickInterval(1)
+                slider.setTickPosition(QSlider.TicksBelow)
+
+                value_label = QLabel(str(slider.value()))
+                value_label.setFixedWidth(30)
+                value_label.setAlignment(Qt.AlignCenter)
+
+                slider.valueChanged.connect(
+                    lambda value, label=value_label: label.setText(str(value))
+                )
+
+                row_layout.addWidget(slider)
+                row_layout.addWidget(value_label)
+                form_layout.addRow(QLabel(label_text), entry_widget)
+
+                self.form_fields_widgets[key]["slider"] = slider
+                self.form_fields_widgets[key]["value_label"] = value_label
 
         layout.addLayout(form_layout)
 
@@ -87,7 +101,10 @@ class SettingsTab(QWidget):
     def save_data(self):
         try:
             for key, widget_dict in self.form_fields_widgets.items():
-                value = widget_dict["slider"].value()
+                if "checkbox" in widget_dict:
+                    value = 1 if widget_dict["checkbox"].isChecked() else 0
+                else:
+                    value = widget_dict["slider"].value()
                 global_settings[key]["value"] = value
 
             self.reset_graphs_and_assets()
@@ -99,8 +116,13 @@ class SettingsTab(QWidget):
     def reset_data(self):
         # Reset settings to default values
         for key in global_settings.keys():
-            global_settings[key]["value"] = global_settings[key]["min"]
-            self.form_fields_widgets[key]["slider"].setValue(global_settings[key]["min"])
+            default_value = global_settings[key]["min"]
+            global_settings[key]["value"] = default_value
+            widget_dict = self.form_fields_widgets[key]
+            if "checkbox" in widget_dict:
+                widget_dict["checkbox"].setChecked(bool(default_value))
+            else:
+                widget_dict["slider"].setValue(default_value)
 
         self.reset_graphs_and_assets()
         QMessageBox.information(self, "Success", "Settings reset to defaults!")

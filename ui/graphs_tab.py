@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from ui.ui_utils import plot_common_activities, mouse_hover_annotation, graph_colors
+from ui.setting import global_settings
 
 class GraphsTab(QWidget):
     def __init__(self, business_logic):
@@ -58,8 +59,10 @@ class GraphsTab(QWidget):
     def plot_total_wealth(self):
         months, wealth_data, _, _, _ = self.business_logic.prepare_data_for_plotting()
         if months:
-            avg_growth = (wealth_data[-1] - wealth_data[0]) / (len(months) - 1) if len(months) > 1 else 0
-            title = f'Total Wealth || Avg growth: {avg_growth:.2f}/M'
+            avg_growth = f'{(wealth_data[-1] - wealth_data[0]) / (len(months) - 1) if len(months) > 1 else 0:.2f}/M'
+            if global_settings["private_mode"]["value"]:
+                avg_growth = "Hidden"
+            title = f'Total Wealth || Avg growth: {avg_growth}'
             ax = self.wealth_figure.add_subplot(111)
             ax.clear()
             ax.plot(months, wealth_data, marker='.', label='Total Wealth', color=graph_colors['gold_1'])
@@ -69,8 +72,10 @@ class GraphsTab(QWidget):
     def plot_income_vs_expenses(self):
         months, _, income_data, expenses_data, _ = self.business_logic.prepare_data_for_plotting()
         if months:
-            avg_income = (sum(income_data)) / (len(months))
-            title = f'Income & Expenses || Avg income: {avg_income:.2f}/M'
+            avg_income = f'{(sum(income_data)) / (len(months)):.2f}/M'
+            if global_settings["private_mode"]["value"]:
+                avg_income = "Hidden"
+            title = f'Income & Expenses || Avg income: {avg_income}'
             ax = self.income_expenses_figure.add_subplot(111)
             ax.clear()
             ax.plot(months, income_data, marker='.', label='Income', color=graph_colors['rose_1'])
@@ -88,8 +93,10 @@ class GraphsTab(QWidget):
             for idx, (expense_type, values) in enumerate(expense_types_data.items()):
                 ax.plot(months, values, marker='.', label=expense_type.replace('_', ' ').title(), color=colors[idx])
                 avg_expenses += sum(values)
-            avg_expenses = avg_expenses / (len(months))
-            title = f'Expense Types || Avg expenses: {avg_expenses:.2f}/M'
+            avg_expenses = f'{avg_expenses / (len(months)):.2f}/M'
+            if global_settings["private_mode"]["value"]:
+                avg_expenses = "Hidden"
+            title = f'Expense Types || Avg expenses: {avg_expenses}'
             ax = plot_common_activities(ax, title, 'Amount')
             self.expense_types_canvas.draw()
 

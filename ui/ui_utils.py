@@ -1,4 +1,5 @@
 import numpy as np
+from ui.setting import global_settings
 
 graph_colors = {
     'rose_1': "#cf7680",   # gentle rose pink
@@ -19,6 +20,8 @@ def plot_common_activities(ax, title, y_label):
     ax.set_ylabel(y_label, color='white')
     ax.tick_params(axis='x', colors='white')
     ax.tick_params(axis='y', colors='white')
+    if global_settings["private_mode"]["value"]:
+        ax.yaxis.set_tick_params(labelleft=False)
     ax.legend(loc='upper left', fontsize=9)
     ax.grid(True)
     ax.set_facecolor("#222222")
@@ -75,12 +78,12 @@ def mouse_hover_annotation(event):
                                 xy=(idx, y),
                                 xytext=(10, 10),
                                 textcoords='offset points',
-                                bbox=dict(boxstyle='round,pad=0.7', 
-                                            fc='#1a1d21', 
+                                bbox=dict(boxstyle='round,pad=0.7',
+                                            fc='#1a1d21',
                                             ec='#4a90e2',
                                             alpha=0.95,
                                             linewidth=2),
-                                arrowprops=dict(arrowstyle='->', 
+                                arrowprops=dict(arrowstyle='->',
                                                 connectionstyle='arc3,rad=0',
                                                 color='#4a90e2',
                                                 lw=1.5),

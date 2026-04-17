@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from ui.ui_utils import mouse_hover_annotation, plot_common_activities, graph_colors
+from ui.setting import global_settings
 
 class AssetsTab(QWidget):
     def __init__(self, business_logic):
@@ -26,7 +27,6 @@ class AssetsTab(QWidget):
         self.canvases['investments'] = self.investments_canvas
         self.figures['investments'] = self.investments_figure
         self.plot_graph_by_type("investments")
-        #self.plot_investments()
 
         # House Value Graph
         self.house_value_figure = Figure()
@@ -38,7 +38,6 @@ class AssetsTab(QWidget):
         self.canvases['house'] = self.house_value_canvas
         self.figures['house'] = self.house_value_figure
         self.plot_graph_by_type("house")
-        #self.plot_house_value()
 
         # Bank Value Graph
         self.bank_value_figure = Figure()
@@ -50,7 +49,6 @@ class AssetsTab(QWidget):
         self.canvases['bank'] = self.bank_value_canvas
         self.figures['bank'] = self.bank_value_figure
         self.plot_graph_by_type("bank")
-        #self.plot_bank_value()
 
         self.setLayout(layout)
     
@@ -69,8 +67,10 @@ class AssetsTab(QWidget):
     def plot_graph_by_type(self, graph_type, graph_color=graph_colors['rose_1']):
         # Draw the specified graph type (investments, house, or bank)
         if self.assets_data_months:
-            avg_growth = (self.assets_data_values[graph_type][-1] - self.assets_data_values[graph_type][0]) / (len(self.assets_data_months) - 1) if len(self.assets_data_months) > 1 else 0
-            title = f'{graph_type.capitalize()} || Avg growth: {avg_growth:.2f}/M'
+            avg_growth = f'{(self.assets_data_values[graph_type][-1] - self.assets_data_values[graph_type][0]) / (len(self.assets_data_months) - 1) if len(self.assets_data_months) > 1 else 0:.2f}/M'
+            if global_settings["private_mode"]["value"]:
+                avg_growth = "Hidden"
+            title = f'{graph_type.capitalize()} || Avg growth: {avg_growth}'
             ax = self.figures[graph_type].add_subplot(111)
             ax.clear()
             ax.plot(self.assets_data_months, self.assets_data_values[graph_type], marker='.', label=graph_type.capitalize(), color=graph_color)

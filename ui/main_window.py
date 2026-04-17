@@ -86,6 +86,7 @@ class MainWindow(QMainWindow):
             }
             QTabBar::tab:selected {
                 color: #ccba78;
+                border-bottom: 2px solid #ccba78;
             }
             QTabBar::tab:hover {
                 background-color: rgba(255, 255, 255, 30);
