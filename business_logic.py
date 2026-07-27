@@ -48,6 +48,9 @@ class BusinessLogic:
             for expense_type in expense_types_data.keys():
                 expense_types_data[expense_type] = expense_types_data[expense_type][-global_settings["time_range"]["value"]:]
 
+        # Convert months from 2026-01 to 26-01 format
+        months = [month[2:] for month in months]
+    
         return months, wealth_data, income_data, expenses_data, expense_types_data
     
     def prepare_assets_data_for_plotting(self):
@@ -71,5 +74,8 @@ class BusinessLogic:
             months = months[-limit:]
             for asset_type in assets_data.keys():
                 assets_data[asset_type] = assets_data[asset_type][-limit:]
+
+        # Convert months from 2026-01 to 26-01 format
+        months = [month[2:] for month in months]
 
         return months, assets_data
